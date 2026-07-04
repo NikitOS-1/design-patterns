@@ -37,8 +37,19 @@
 }
 
 @layer components {
-  /* Faint schematic grid backdrop, masked so it fades toward the edges */
+  /* Faint schematic grid backdrop. The grid + its fade-out mask live on a
+     ::before layer so ONLY the grid is masked — the text on top stays fully
+     opaque and readable (previously the mask faded the content too). */
   .schematic-grid {
+    position: relative;
+    isolation: isolate;
+  }
+  .schematic-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image:
       linear-gradient(to right, rgba(94, 234, 212, 0.06) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(94, 234, 212, 0.06) 1px, transparent 1px);

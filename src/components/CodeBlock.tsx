@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { CodeExample } from "@/lib/types";
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 export function CodeBlock({ example }: { example: CodeExample }) {
   const [copied, setCopied] = useState(false);
+  const t = useT();
 
   async function handleCopy() {
     await navigator.clipboard.writeText(example.code);
@@ -23,7 +25,7 @@ export function CodeBlock({ example }: { example: CodeExample }) {
           onClick={handleCopy}
           className="font-mono text-[11px] uppercase tracking-widest text-ink-300 transition-colors hover:text-amber"
         >
-          {copied ? "Copied ✓" : "Copy"}
+          {copied ? t.codeBlock.copied : t.codeBlock.copy}
         </button>
       </div>
       {example.description && (

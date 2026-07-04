@@ -1,13 +1,17 @@
-import { CATEGORY_LABEL, Pattern } from "@/lib/types";
+"use client";
+
+import { Pattern } from "@/lib/types";
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 export function TitleBlock({ pattern }: { pattern: Pattern }) {
+  const t = useT();
   return (
     <div className="blueprint-frame border border-ink-500 bg-ink-800/60">
       <div className="grid grid-cols-2 divide-x divide-ink-600 sm:grid-cols-4">
-        <Cell label="Dwg No." value={pattern.code} accent />
-        <Cell label="Category" value={CATEGORY_LABEL[pattern.category]} />
-        <Cell label="Examples" value={`${pattern.codeExamples.length} file${pattern.codeExamples.length > 1 ? "s" : ""}`} />
-        <Cell label="Stack" value="React / Next.js / TS" />
+        <Cell label={t.titleBlock.drawingNo} value={pattern.code} accent />
+        <Cell label={t.titleBlock.category} value={t.category.label[pattern.category]} />
+        <Cell label={t.titleBlock.examples} value={t.titleBlock.files(pattern.codeExamples.length)} />
+        <Cell label={t.titleBlock.stack} value="React / Next.js / TS" />
       </div>
     </div>
   );

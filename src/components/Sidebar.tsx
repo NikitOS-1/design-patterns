@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { patterns } from "@/content/patterns";
-import { CATEGORY_LABEL, CATEGORY_ORDER, PatternCategory } from "@/lib/types";
+import { CATEGORY_ORDER, PatternCategory } from "@/lib/types";
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 // Derive the grouped structure once from the single source of truth.
 const GROUPED: { category: PatternCategory; items: typeof patterns }[] = CATEGORY_ORDER.map(
@@ -17,6 +18,7 @@ const GROUPED: { category: PatternCategory; items: typeof patterns }[] = CATEGOR
 export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const t = useT();
 
   return (
     <>
@@ -26,7 +28,7 @@ export function Sidebar() {
         className="flex items-center gap-2 border border-ink-600 px-3 py-2 font-mono text-xs uppercase tracking-widest text-ink-200 lg:hidden"
         aria-expanded={open}
       >
-        <span className="text-amber">☰</span> Patterns index
+        <span className="text-amber">☰</span> {t.sidebar.index}
       </button>
 
       <nav
@@ -40,7 +42,7 @@ export function Sidebar() {
             <div key={category}>
               <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-teal">
                 <span className="h-px w-4 bg-teal/50" />
-                {CATEGORY_LABEL[category]}
+                {t.category.label[category]}
                 <span className="text-ink-500">({items.length})</span>
               </div>
               <ul className="flex flex-col">

@@ -2,18 +2,20 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { CATEGORY_ORDER } from "@/lib/types";
+import { useT } from "@/lib/i18n/LocaleProvider";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
-const NAV_LINKS = [
-  { href: "/#creational", label: "Creational" },
-  { href: "/#structural", label: "Structural" },
-  { href: "/#behavioral", label: "Behavioral" },
-  { href: "/#react", label: "React" },
-];
+const GITHUB_URL = "https://github.com/NikitOS-1/design-patterns";
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const t = useT();
+
+  const navLinks = CATEGORY_ORDER.map((cat) => ({
+    href: `/#${cat}`,
+    label: t.nav.categories[cat],
+  }));
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-600 bg-ink-900/90 backdrop-blur">
@@ -29,7 +31,7 @@ export function SiteNav() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -38,35 +40,39 @@ export function SiteNav() {
               {link.label}
             </Link>
           ))}
+          <LangSwitcher />
           <a
-            href="https://github.com/NikitOS-1/design-patterns"
+            href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="border border-ink-500 px-4 py-2 font-mono text-xs uppercase tracking-widest text-ink-100 transition-colors hover:border-amber hover:text-amber"
           >
-            GitHub ↗
+            {t.nav.github}
           </a>
         </nav>
 
-        <button
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 border border-ink-500 md:hidden"
-        >
-          <span
-            className={`block h-px w-4 bg-ink-100 transition-transform ${open ? "translate-y-[3px] rotate-45" : ""}`}
-          />
-          <span
-            className={`block h-px w-4 bg-ink-100 transition-transform ${open ? "-translate-y-[3px] -rotate-45" : ""}`}
-          />
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <LangSwitcher />
+          <button
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 border border-ink-500"
+          >
+            <span
+              className={`block h-px w-4 bg-ink-100 transition-transform ${open ? "translate-y-[3px] rotate-45" : ""}`}
+            />
+            <span
+              className={`block h-px w-4 bg-ink-100 transition-transform ${open ? "-translate-y-[3px] -rotate-45" : ""}`}
+            />
+          </button>
+        </div>
       </div>
 
       {open && (
         <nav className="border-t border-ink-600 bg-ink-900 px-5 py-4 md:hidden">
           <ul className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -79,12 +85,12 @@ export function SiteNav() {
             ))}
             <li className="pt-2">
               <a
-                href="https://github.com/NikitOS-1/design-patterns"
+                href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block border border-ink-500 px-4 py-2.5 text-center font-mono text-sm uppercase tracking-widest text-amber"
               >
-                GitHub ↗
+                {t.nav.github}
               </a>
             </li>
           </ul>
