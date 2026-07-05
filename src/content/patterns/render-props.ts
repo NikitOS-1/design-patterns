@@ -37,6 +37,11 @@ export const renderProps: Pattern = {
       detail:
         "Formik exposes field state through a render function so consumers render custom inputs while Formik owns the form logic.",
     },
+    {
+      name: "Measurement / motion render props",
+      detail:
+        "Components that measure an element or track gestures (a `<Measure>` or `<Motion>`) call a children function with the live size or transform, letting the consumer render anything positioned by it.",
+    },
   ],
   codeExamples: [
     {
@@ -68,6 +73,52 @@ export function Toggle({ children }: { children: (api: ToggleApi) => React.React
 //     </button>
 //   )}
 // </Toggle>`,
+    },
+    {
+      filename: "src/components/utils/Fetch.tsx",
+      language: "tsx",
+      description:
+        "A headless data-fetcher that owns the request lifecycle and hands loading/error/data to a render function, so the consumer decides exactly how each state looks.",
+      code: `import { useEffect, useState } from "react";
+
+type State<T> =
+  | { status: "loading" }
+  | { status: "error"; error: string }
+  | { status: "success"; data: T };
+
+// Owns fetching; renders nothing of its own — the children function does.
+export function Fetch<T>({
+  url,
+  children,
+}: {
+  url: string;
+  children: (state: State<T>) => React.ReactNode;
+}) {
+  const [state, setState] = useState<State<T>>({ status: "loading" });
+
+  useEffect(() => {
+    let active = true;
+    setState({ status: "loading" });
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => active && setState({ status: "success", data }))
+      .catch((e) => active && setState({ status: "error", error: String(e) }));
+    return () => {
+      active = false;
+    };
+  }, [url]);
+
+  return <>{children(state)}</>;
+}
+
+// The consumer owns every state's markup:
+// <Fetch<Candidate[]> url="/api/candidates">
+//   {(s) =>
+//     s.status === "loading" ? <Spinner /> :
+//     s.status === "error"   ? <ErrorNote msg={s.error} /> :
+//     <List items={s.data} />
+//   }
+// </Fetch>`,
     },
   ],
   pros: [

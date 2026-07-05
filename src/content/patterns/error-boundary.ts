@@ -37,6 +37,11 @@ export const errorBoundary: Pattern = {
       detail:
         "Monitoring SDKs provide error-boundary wrappers that render a fallback and automatically report the captured error with component stack context.",
     },
+    {
+      name: "Per-widget boundaries in dashboards",
+      detail:
+        "Analytics dashboards wrap each independent widget in its own boundary, so a single failing chart shows a local 'couldn't load' card while every other widget keeps rendering.",
+    },
   ],
   codeExamples: [
     {
@@ -91,6 +96,39 @@ export class ErrorBoundary extends Component<Props, State> {
 // >
 //   <RevenueChart />
 // </ErrorBoundary>`,
+    },
+    {
+      filename: "src/app/dashboard/error.tsx",
+      language: "tsx",
+      description:
+        "The App Router's built-in route error boundary: an error.tsx receives the thrown error plus a reset() to retry, isolating a failed segment without hand-writing a class component.",
+      code: `"use client";
+
+import { useEffect } from "react";
+
+// A route segment's error.tsx IS its error boundary — no class needed.
+export default function DashboardError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    captureException(error); // report to monitoring when shown
+  }, [error]);
+
+  return (
+    <div className="p-8 text-center">
+      <p className="text-ink-100">This section failed to load.</p>
+      <button onClick={reset} className="mt-3 border border-ink-500 px-4 py-2 hover:border-amber">
+        Try again
+      </button>
+    </div>
+  );
+}
+
+declare function captureException(error: Error): void;`,
     },
   ],
   pros: [

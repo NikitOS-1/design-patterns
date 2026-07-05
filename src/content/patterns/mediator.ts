@@ -37,6 +37,11 @@ export const mediator: Pattern = {
       detail:
         "A store mediates communication between unrelated components — they read from and write to the store, never directly to each other.",
     },
+    {
+      name: "Dashboard filter coordination",
+      detail:
+        "A filter bar dispatches to one controller that updates the shared query; charts and tables read from it and never call each other, so adding a chart doesn't touch the filters.",
+    },
   ],
   codeExamples: [
     {
@@ -74,6 +79,40 @@ export function shippingReducer(state: ShippingState, action: Action): ShippingS
 // const [state, dispatch] = useReducer(shippingReducer, initial);
 // <CountrySelect value={state.country} onChange={(c) => dispatch({ type: "SET_COUNTRY", country: c })} />
 // <RegionSelect  value={state.region}  onChange={(r) => dispatch({ type: "SET_REGION", region: r })} />`,
+    },
+    {
+      filename: "src/features/wizard/WizardMediator.ts",
+      language: "ts",
+      description:
+        "A mediator coordinating wizard steps: steps report completion to the mediator, which decides which step unlocks next — steps never reference each other directly.",
+      code: `type StepId = "account" | "profile" | "billing";
+
+// The mediator owns all the "when X completes, unlock Y" logic centrally.
+export class WizardMediator {
+  private completed: Record<StepId, boolean> = {
+    account: false,
+    profile: false,
+    billing: false,
+  };
+  private readonly order: StepId[] = ["account", "profile", "billing"];
+
+  complete(id: StepId) {
+    this.completed[id] = true;
+  }
+
+  // A step is unlocked only once every step before it is complete.
+  isUnlocked(id: StepId): boolean {
+    const index = this.order.indexOf(id);
+    return this.order.slice(0, index).every((prev) => this.completed[prev]);
+  }
+
+  get currentStep(): StepId {
+    return this.order.find((id) => !this.completed[id]) ?? "billing";
+  }
+}
+
+// Each step calls mediator.complete(id) and reads mediator.isUnlocked(id) —
+// it never knows the other steps exist.`,
     },
   ],
   pros: [

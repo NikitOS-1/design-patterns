@@ -36,6 +36,11 @@ export const state: Pattern = {
       detail:
         "A hand-rolled `useAsync` returning a discriminated union is a lightweight State pattern that makes 'loading with data already present' or 'error but still loading' impossible to represent by accident.",
     },
+    {
+      name: "Media player and upload lifecycles",
+      detail:
+        "Players and uploaders model explicit states (idle → buffering → playing → ended, or queued → uploading → done → failed), so the UI switches on one status instead of juggling isPlaying/isBuffering flags.",
+    },
   ],
   codeExamples: [
     {
@@ -75,6 +80,43 @@ export function useAsyncState<T>() {
 //   case "success": return <List items={state.data} />; // data guaranteed here
 //   case "error":   return <Error message={state.error} />;
 // }`,
+    },
+    {
+      filename: "src/features/checkout/checkoutMachine.ts",
+      language: "ts",
+      description:
+        "A tiny explicit state machine (via a reducer): each state lists which transitions are legal, so an illegal jump — like paying while already submitting — simply can't happen.",
+      code: `type CheckoutState =
+  | { status: "cart" }
+  | { status: "submitting" }
+  | { status: "paid"; orderId: string }
+  | { status: "failed"; error: string };
+
+type CheckoutEvent =
+  | { type: "SUBMIT" }
+  | { type: "SUCCESS"; orderId: string }
+  | { type: "ERROR"; error: string }
+  | { type: "RETRY" };
+
+// Transitions are explicit — an event that's illegal for the current state
+// is ignored, so you can't pay twice or pay from the "paid" state.
+export function checkoutReducer(state: CheckoutState, event: CheckoutEvent): CheckoutState {
+  switch (state.status) {
+    case "cart":
+      return event.type === "SUBMIT" ? { status: "submitting" } : state;
+    case "submitting":
+      if (event.type === "SUCCESS") return { status: "paid", orderId: event.orderId };
+      if (event.type === "ERROR") return { status: "failed", error: event.error };
+      return state;
+    case "failed":
+      return event.type === "RETRY" ? { status: "submitting" } : state;
+    case "paid":
+      return state; // terminal — no transitions out
+  }
+}
+
+// const [state, dispatch] = useReducer(checkoutReducer, { status: "cart" });
+// dispatch({ type: "SUBMIT" }); // only does anything from "cart"`,
     },
   ],
   pros: [

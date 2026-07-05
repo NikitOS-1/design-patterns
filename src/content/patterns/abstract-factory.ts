@@ -37,6 +37,11 @@ export const abstractFactory: Pattern = {
       detail:
         "Each tenant gets a concrete factory producing its own branded Button, Header, and EmptyState, selected once at the app root so the whole UI stays on-brand.",
     },
+    {
+      name: "Data-grid density families",
+      detail:
+        "An enterprise table exposes a factory per density ('compact' | 'comfortable') producing matching Row, Cell, and Header components, so a grid never mixes compact cells with comfortable headers.",
+    },
   ],
   codeExamples: [
     {
@@ -91,6 +96,51 @@ export const darkThemeFactory: ThemeFactory = {
 // const factory = theme === "dark" ? darkThemeFactory : lightThemeFactory;
 // const Button = factory.createButton();
 // const Card = factory.createCard(); // guaranteed to match Button`,
+    },
+    {
+      filename: "src/design-system/tenantFactory.tsx",
+      language: "tsx",
+      description:
+        "One factory per tenant produces a coordinated Logo, PrimaryButton, and EmptyState; the app picks a factory once at the root so the whole UI stays on that tenant's brand.",
+      code: `import type { ComponentType } from "react";
+
+export interface BrandProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+// A whole coordinated family of branded primitives.
+export interface TenantFactory {
+  brandName: string;
+  createLogo(): ComponentType<BrandProps>;
+  createPrimaryButton(): ComponentType<BrandProps & { onClick?: () => void }>;
+  createEmptyState(): ComponentType<{ title: string }>;
+}
+
+export const acmeFactory: TenantFactory = {
+  brandName: "Acme",
+  createLogo: () => () => <span className="font-bold text-orange-500">ACME</span>,
+  createPrimaryButton: () => (props) => (
+    <button className="bg-orange-500 text-white" onClick={props.onClick}>{props.children}</button>
+  ),
+  createEmptyState: () => (props) => <div className="text-orange-500">{props.title}</div>,
+};
+
+export const globexFactory: TenantFactory = {
+  brandName: "Globex",
+  createLogo: () => () => <span className="font-bold text-emerald-600">globex</span>,
+  createPrimaryButton: () => (props) => (
+    <button className="bg-emerald-600 text-white" onClick={props.onClick}>{props.children}</button>
+  ),
+  createEmptyState: () => (props) => <div className="text-emerald-600">{props.title}</div>,
+};
+
+const TENANT_FACTORIES: Record<string, TenantFactory> = { acme: acmeFactory, globex: globexFactory };
+
+// Pick the family once at the root; everything built from it is on-brand:
+// const factory = TENANT_FACTORIES[tenant.slug] ?? acmeFactory;
+// const Logo = factory.createLogo();
+// const PrimaryButton = factory.createPrimaryButton();`,
     },
   ],
   pros: [

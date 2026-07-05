@@ -37,6 +37,11 @@ export const observer: Pattern = {
       detail:
         "A single socket connection receives suggestion events from the server; a `useSuggestions()` hook subscribes to just the events relevant to the currently open candidate, decoupling the transport layer from any specific UI component.",
     },
+    {
+      name: "Cross-tab sync via BroadcastChannel",
+      detail:
+        "A `BroadcastChannel('auth')` lets one tab publish a logout event that every other open tab observes and reacts to, with no tab holding a reference to the others.",
+    },
   ],
   codeExamples: [
     {

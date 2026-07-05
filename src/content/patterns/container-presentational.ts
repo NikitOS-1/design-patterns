@@ -37,6 +37,11 @@ export const containerPresentational: Pattern = {
       detail:
         "Splitting out a pure `<CandidateTable candidates={...} />` lets unit tests render it with fixtures instead of mocking fetch, keeping tests fast and focused.",
     },
+    {
+      name: "Classic Redux connect() containers",
+      detail:
+        "The original container/presentational split: a `connect()`-ed container maps store state to props and passes them to a 'dumb' presentational component that just renders them.",
+    },
   ],
   codeExamples: [
     {

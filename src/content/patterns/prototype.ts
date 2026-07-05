@@ -36,6 +36,11 @@ export const prototype: Pattern = {
       detail:
         "The built-in `structuredClone()` gives an independent deep copy of a settings object so an editable draft never mutates the saved original.",
     },
+    {
+      name: "Duplicating rows in table/query builders",
+      detail:
+        "A 'duplicate row' action in a filter or query builder clones the row's full config — including nested conditions — so edits to the copy never leak back into the original rule.",
+    },
   ],
   codeExamples: [
     {
@@ -67,6 +72,41 @@ export function cloneWidget(source: Widget): Widget {
 // Usage in a "Duplicate" handler:
 // const duplicated = cloneWidget(widget);
 // setWidgets((prev) => [...prev, duplicated]);`,
+    },
+    {
+      filename: "src/features/candidates/createSimilar.ts",
+      language: "ts",
+      description:
+        "'Create similar': seed a fresh, editable draft from an existing record by deep-cloning it and stripping identity/audit fields, so the form opens pre-filled but fully independent.",
+      code: `interface CandidateDraft {
+  id?: string;
+  fullName: string;
+  email: string;
+  stage: "new" | "screening" | "interview";
+  tags: string[];
+  notes: { author: string; text: string }[]; // nested — must stay independent
+  createdAt?: string;
+}
+
+export function createSimilar(source: CandidateDraft): CandidateDraft {
+  // Deep copy first, so nothing is shared with the original record.
+  const copy = structuredClone(source);
+
+  // Drop identity + audit fields — this is a genuinely new record.
+  delete copy.id;
+  delete copy.createdAt;
+
+  return {
+    ...copy,
+    fullName: "", // the one field the user must retype
+    stage: "new", // reset the lifecycle
+    notes: [],    // the copy starts with an empty note history
+  };
+}
+
+// Usage in a "Create similar" button — the draft is independent:
+// const draft = createSimilar(existingCandidate);
+// openCandidateForm(draft);`,
     },
   ],
   pros: [

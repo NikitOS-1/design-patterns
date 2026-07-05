@@ -37,6 +37,11 @@ export const decorator: Pattern = {
       detail:
         "Error-monitoring SDKs commonly ship a HOC that wraps a page or component to automatically capture render errors and performance spans around it.",
     },
+    {
+      name: "React.memo and forwardRef",
+      detail:
+        "`React.memo(Component)` and `forwardRef(Component)` are built-in decorators: they wrap a component to add memoization or ref-forwarding while leaving its render logic untouched.",
+    },
   ],
   codeExamples: [
     {

@@ -36,6 +36,11 @@ export const proxy: Pattern = {
       detail:
         "These libraries wrap state in a JavaScript `Proxy` so reads are tracked and writes trigger re-renders — access interception done transparently to the code using the state.",
     },
+    {
+      name: "next/image and next/dynamic",
+      detail:
+        "`next/image` stands in for a raw `<img>` and transparently adds lazy-loading, resizing, and format negotiation; `next/dynamic` is a loading proxy for a component's code.",
+    },
   ],
   codeExamples: [
     {
@@ -85,6 +90,48 @@ export class CachingClientProxy implements DataClient {
 // const client: DataClient = new CachingClientProxy(new ApiDataClient());
 // await client.getCandidate("abc"); // network
 // await client.getCandidate("abc"); // cache`,
+    },
+    {
+      filename: "src/lib/api/AuthorizedClientProxy.ts",
+      language: "ts",
+      description:
+        "A permission proxy: the same interface as the real client, but it checks the caller's role before delegating — access control added transparently, with no changes to call sites.",
+      code: `export interface DocumentClient {
+  getDocument(id: string): Promise<{ id: string; body: string }>;
+  deleteDocument(id: string): Promise<void>;
+}
+
+class ApiDocumentClient implements DocumentClient {
+  async getDocument(id: string) {
+    const res = await fetch(\`/api/documents/\${id}\`);
+    return res.json();
+  }
+  async deleteDocument(id: string) {
+    await fetch(\`/api/documents/\${id}\`, { method: "DELETE" });
+  }
+}
+
+// Same interface, so it's a drop-in replacement — but it gates access first.
+export class AuthorizedClientProxy implements DocumentClient {
+  constructor(
+    private readonly real: DocumentClient,
+    private readonly role: "viewer" | "editor"
+  ) {}
+
+  getDocument(id: string) {
+    return this.real.getDocument(id); // reading is allowed for everyone
+  }
+
+  async deleteDocument(id: string) {
+    if (this.role !== "editor") {
+      throw new Error("Forbidden: editor role required to delete");
+    }
+    return this.real.deleteDocument(id);
+  }
+}
+
+// Callers depend on DocumentClient; the proxy enforces the rule transparently:
+// const client: DocumentClient = new AuthorizedClientProxy(new ApiDocumentClient(), user.role);`,
     },
   ],
   pros: [

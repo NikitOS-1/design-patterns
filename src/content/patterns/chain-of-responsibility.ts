@@ -36,6 +36,11 @@ export const chainOfResponsibility: Pattern = {
       detail:
         "A field's value passes through required → format → async-uniqueness validators in order; the first failure stops the chain and reports the error.",
     },
+    {
+      name: "Apollo Link / axios interceptor chains",
+      detail:
+        "A request flows through a chain of links (auth → retry → error → http); each link handles or forwards it, so adding retry logic means inserting one link, not editing the transport.",
+    },
   ],
   codeExamples: [
     {
@@ -73,6 +78,49 @@ export function runChain<T>(value: T, validators: Validator<T>[]): ValidationRes
 // Usage — add/remove/reorder validators freely:
 // const result = runChain(email, [required, maxLength(120), email]);
 // if (!result.ok) showError(result.error);`,
+    },
+    {
+      filename: "src/lib/pipeline/middlewareChain.ts",
+      language: "ts",
+      description:
+        "An Express-style middleware chain: each handler either responds (short-circuits) or calls next(). Auth, logging, and the final handler are independent, composable links.",
+      code: `interface Ctx {
+  userId: string | null;
+  path: string;
+  response?: string;
+}
+
+type Middleware = (ctx: Ctx, next: () => void) => void;
+
+// Each link is independent and only knows about "next".
+const requireAuth: Middleware = (ctx, next) => {
+  if (!ctx.userId) {
+    ctx.response = "401 Unauthorized"; // short-circuit: don't call next()
+    return;
+  }
+  next();
+};
+
+const logRequest: Middleware = (ctx, next) => {
+  console.log(\`\${ctx.userId ?? "anon"} -> \${ctx.path}\`);
+  next();
+};
+
+const handler: Middleware = (ctx) => {
+  ctx.response = \`200 OK: \${ctx.path}\`;
+};
+
+export function runChain(ctx: Ctx, chain: Middleware[]): Ctx {
+  const run = (i: number) => {
+    const mw = chain[i];
+    if (mw) mw(ctx, () => run(i + 1));
+  };
+  run(0);
+  return ctx;
+}
+
+// Reorder or insert links freely — the handler never changes:
+// runChain(ctx, [logRequest, requireAuth, handler]);`,
     },
   ],
   pros: [

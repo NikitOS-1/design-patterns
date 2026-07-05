@@ -37,6 +37,11 @@ export const customHooks: Pattern = {
       detail:
         "In FSD/feature-based codebases, each slice exposes hooks like `useCandidates()` so components import behavior without knowing about the API layer underneath.",
     },
+    {
+      name: "Browser-API hooks (useMediaQuery, useIntersectionObserver)",
+      detail:
+        "Wrapping `matchMedia` or `IntersectionObserver` in a hook gives components a clean reactive value (`isMobile`, `isVisible`) without any component re-implementing listeners and cleanup.",
+    },
   ],
   codeExamples: [
     {

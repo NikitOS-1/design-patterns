@@ -37,6 +37,11 @@ export const serverClientComponents: Pattern = {
       detail:
         "Server Components paired with `<Suspense>` stream HTML as data resolves, so the shell renders instantly while slower sections fill in — impossible with an all-client tree.",
     },
+    {
+      name: "Server Actions from client forms",
+      detail:
+        "A client form calls a server action (a `'use server'` function) directly as its onSubmit; the mutation runs on the server with DB access while the form stays an interactive client leaf.",
+    },
   ],
   codeExamples: [
     {

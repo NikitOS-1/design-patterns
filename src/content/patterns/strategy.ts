@@ -36,6 +36,11 @@ export const strategy: Pattern = {
       detail:
         "SaaS billing code commonly defines one pricing strategy per plan, all implementing `calculateTotal(cart)`, selected once at checkout and then called identically regardless of tier.",
     },
+    {
+      name: "Passport.js authentication strategies",
+      detail:
+        "Each auth method (local, OAuth, SAML) is a Strategy implementing the same verify interface, so the login route calls one strategy without branching on how credentials are checked.",
+    },
   ],
   codeExamples: [
     {

@@ -28,20 +28,8 @@ export interface Pattern {
   cons: string[];
 }
 
-export const CATEGORY_LABEL: Record<PatternCategory, string> = {
-  creational: "Creational",
-  structural: "Structural",
-  behavioral: "Behavioral",
-  react: "React Patterns",
-};
-
-export const CATEGORY_BLURB: Record<PatternCategory, string> = {
-  creational: "How objects and components get built, so creation logic doesn't leak everywhere.",
-  structural: "How components, modules, and data shapes are composed together.",
-  behavioral: "How responsibilities and communication flow between parts of the app.",
-  react:
-    "Patterns that aren't in the Gang of Four book but are the real vocabulary of production React today.",
-};
+// Human-readable category labels and blurbs are localized; see
+// src/lib/i18n/dictionary.ts (`category.label` / `category.blurb`).
 
 // Order categories are shown in, across the sidebar and homepage.
 export const CATEGORY_ORDER: PatternCategory[] = [

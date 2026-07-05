@@ -36,6 +36,11 @@ export const flyweight: Pattern = {
       detail:
         "A table of 50k rows referencing one shared `Country`/`Currency` object per unique value (rather than a copy per row) keeps memory flat as row count grows.",
     },
+    {
+      name: "Emoji / icon sprite atlases",
+      detail:
+        "Icon systems reference one shared sprite/atlas entry per glyph across thousands of renders rather than embedding a copy per element, keeping large icon-heavy lists light.",
+    },
   ],
   codeExamples: [
     {
@@ -63,6 +68,39 @@ export function getNumberFormatter(
 // In a 10,000-row table, every USD cell shares ONE formatter instance:
 // const usd = getNumberFormatter("en-US", { style: "currency", currency: "USD" });
 // rows.map((r) => usd.format(r.amount));`,
+    },
+    {
+      filename: "src/lib/icons/iconRegistry.ts",
+      language: "ts",
+      description:
+        "A flyweight registry of immutable icon descriptors: every cell referencing the same icon shares one frozen object instead of allocating a copy per row.",
+      code: `export interface IconDescriptor {
+  readonly path: string;
+  readonly viewBox: string;
+  readonly color: string;
+}
+
+// One frozen, shared instance per unique key — the flyweights.
+const registry = new Map<string, IconDescriptor>();
+
+const ICON_PATHS: Record<string, string> = {
+  check: "M20 6 9 17l-5-5",
+  x: "M18 6 6 18M6 6l12 12",
+};
+
+export function getIcon(name: string, color = "currentColor"): IconDescriptor {
+  const key = \`\${name}:\${color}\`;
+
+  let icon = registry.get(key);
+  if (!icon) {
+    icon = Object.freeze({ path: ICON_PATHS[name]!, viewBox: "0 0 24 24", color });
+    registry.set(key, icon); // one shared flyweight, reused everywhere
+  }
+  return icon;
+}
+
+// In a 10,000-row table, every "check" cell shares ONE descriptor object:
+// rows.map((r) => renderIcon(getIcon(r.statusIcon)));`,
     },
   ],
   pros: [

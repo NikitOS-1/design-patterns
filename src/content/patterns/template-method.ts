@@ -36,6 +36,11 @@ export const templateMethod: Pattern = {
       detail:
         "A `useSubmit(handler)` template standardizes validation → submit → toast → redirect, while each form supplies only the actual submit handler.",
     },
+    {
+      name: "API route handler wrappers",
+      detail:
+        "A `withApiHandler(fn)` template owns parsing, auth, error-to-JSON, and logging; each route supplies only its core `fn`, so every endpoint follows the same request lifecycle.",
+    },
   ],
   codeExamples: [
     {
@@ -82,6 +87,49 @@ export function useAsyncResource<Raw, T>({ fetcher, transform, onError }: Option
 // const { data } = useAsyncResource({
 //   fetcher: () => fetch("/api/candidates").then((r) => r.json()),
 //   transform: (raw: RawCandidate[]) => raw.map(adaptCandidate),
+// });`,
+    },
+    {
+      filename: "src/hooks/useSubmit.ts",
+      language: "ts",
+      description:
+        "A submit template that fixes the validate → submit → toast → redirect sequence once; each form plugs in only its own submit handler and success route.",
+      code: `import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "@/lib/toast";
+
+interface Options<T> {
+  onSubmit: (values: T) => Promise<void>; // the one varying step
+  successMessage: string;
+  redirectTo?: string;
+}
+
+// The template: the sequence and shared handling are fixed here.
+export function useSubmit<T>({ onSubmit, successMessage, redirectTo }: Options<T>) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  async function submit(values: T) {
+    setIsSubmitting(true);
+    try {
+      await onSubmit(values);        // step supplied by the caller
+      toast.success(successMessage); // shared cross-cutting handling
+      if (redirectTo) router.push(redirectTo);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return { submit, isSubmitting };
+}
+
+// Each form fills in only what differs:
+// const { submit, isSubmitting } = useSubmit({
+//   onSubmit: (values) => createCandidate(values),
+//   successMessage: "Candidate created",
+//   redirectTo: "/candidates",
 // });`,
     },
   ],

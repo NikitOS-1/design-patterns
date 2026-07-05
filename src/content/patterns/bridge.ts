@@ -36,6 +36,11 @@ export const bridge: Pattern = {
       detail:
         "A persistence abstraction (save/load/list) is bridged to interchangeable implementations (localStorage, IndexedDB, remote sync) so feature code doesn't change when the backend does.",
     },
+    {
+      name: "Payment: method × processor",
+      detail:
+        "A payment 'method' (card, wallet, bank transfer) is bridged to a 'processor' implementation (Stripe, Adyen); adding a processor works for every method without a class per pair.",
+    },
   ],
   codeExamples: [
     {
@@ -81,6 +86,57 @@ export class SecurityAlertNotification extends Notification {
 // Any kind pairs with any channel — no combinatorial classes:
 // await new WelcomeNotification(emailChannel).notify(user.email, { name: user.name });
 // await new SecurityAlertNotification(smsChannel).notify(user.phone, { location: "Kyiv" });`,
+    },
+    {
+      filename: "src/lib/storage/typedStore.ts",
+      language: "ts",
+      description:
+        "A persistence abstraction bridged to interchangeable storage backends: the same save/load API runs over localStorage or a remote API, chosen once — data type and transport vary independently.",
+      code: `// Implementation side: HOW bytes are stored.
+export interface StorageBackend {
+  read(key: string): Promise<string | null>;
+  write(key: string, value: string): Promise<void>;
+}
+
+export const localBackend: StorageBackend = {
+  async read(key) {
+    return localStorage.getItem(key);
+  },
+  async write(key, value) {
+    localStorage.setItem(key, value);
+  },
+};
+
+export const apiBackend: StorageBackend = {
+  async read(key) {
+    const res = await fetch(\`/api/kv/\${key}\`);
+    return res.ok ? (await res.json()).value : null;
+  },
+  async write(key, value) {
+    await fetch(\`/api/kv/\${key}\`, { method: "PUT", body: JSON.stringify({ value }) });
+  },
+};
+
+// Abstraction side: WHAT is stored. It holds a bridge to a backend.
+export class TypedStore<T> {
+  constructor(
+    private readonly key: string,
+    private readonly backend: StorageBackend
+  ) {}
+
+  async load(): Promise<T | null> {
+    const raw = await this.backend.read(this.key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  }
+
+  async save(value: T): Promise<void> {
+    await this.backend.write(this.key, JSON.stringify(value));
+  }
+}
+
+// Pair any data type with any backend — no combinatorial classes:
+// const draft = new TypedStore<Draft>("draft", localBackend);
+// const prefs = new TypedStore<Prefs>("prefs", apiBackend);`,
     },
   ],
   pros: [

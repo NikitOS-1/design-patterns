@@ -36,6 +36,11 @@ export const compoundComponents: Pattern = {
       detail:
         "The nested route components share routing context implicitly, letting you compose the routing tree declaratively as elements rather than a config blob.",
     },
+    {
+      name: "Recharts composable chart parts",
+      detail:
+        "`<LineChart><XAxis/><Tooltip/><Line/></LineChart>` composes a chart from child parts that share chart context, so you arrange axes, grids, and series declaratively instead of via one options blob.",
+    },
   ],
   codeExamples: [
     {
@@ -105,6 +110,52 @@ Tabs.Panel = Panel;
 //   <Tabs.Panel value="overview">…</Tabs.Panel>
 //   <Tabs.Panel value="activity">…</Tabs.Panel>
 // </Tabs>`,
+    },
+    {
+      filename: "src/components/ui/Accordion.tsx",
+      language: "tsx",
+      description:
+        "A second compound component — an Accordion. The parent tracks which item is open via context; Item reads it, so consumers compose sections like HTML instead of passing an items={[...]} config.",
+      code: `"use client";
+
+import { createContext, useContext, useState } from "react";
+
+const AccordionCtx = createContext<{ openId: string | null; toggle: (id: string) => void } | null>(
+  null
+);
+
+function useAccordion() {
+  const ctx = useContext(AccordionCtx);
+  if (!ctx) throw new Error("Accordion.* must be used inside <Accordion>");
+  return ctx;
+}
+
+export function Accordion({ children }: { children: React.ReactNode }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const toggle = (id: string) => setOpenId((cur) => (cur === id ? null : id));
+  return <AccordionCtx.Provider value={{ openId, toggle }}>{children}</AccordionCtx.Provider>;
+}
+
+function Item({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  const { openId, toggle } = useAccordion();
+  const open = openId === id;
+  return (
+    <div className="border-b border-ink-600">
+      <button onClick={() => toggle(id)} aria-expanded={open} className="w-full py-3 text-left">
+        {title}
+      </button>
+      {open && <div className="pb-3 text-sm text-ink-300">{children}</div>}
+    </div>
+  );
+}
+
+Accordion.Item = Item;
+
+// Consumers compose sections like HTML — no items={[...]} config object:
+// <Accordion>
+//   <Accordion.Item id="shipping" title="Shipping">…</Accordion.Item>
+//   <Accordion.Item id="returns" title="Returns">…</Accordion.Item>
+// </Accordion>`,
     },
   ],
   pros: [

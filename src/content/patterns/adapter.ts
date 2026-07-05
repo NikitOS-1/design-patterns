@@ -36,6 +36,11 @@ export const adapter: Pattern = {
       detail:
         "Teams often wrap whichever date library they use behind their own `formatDate()` helpers so the rest of the app depends on one internal date interface, not the library's own API.",
     },
+    {
+      name: "Analytics adapters (GA4, Segment, PostHog)",
+      detail:
+        "One `track(event)` interface with a thin adapter per vendor lets product code fire a single internal event shape; swapping or adding an analytics provider touches only its adapter.",
+    },
   ],
   codeExamples: [
     {
@@ -87,6 +92,49 @@ export function adaptPeopleForceCandidate(dto: PeopleForceCandidateDTO): Candida
 
 // Components only ever import Candidate and never see a DTO:
 // <CandidateCard candidate={adaptPeopleForceCandidate(rawFromApi)} />`,
+    },
+    {
+      filename: "src/features/billing/adapters/stripeInvoiceAdapter.ts",
+      language: "ts",
+      description:
+        "Adapting Stripe's raw invoice shape (amounts in cents, Unix timestamps, vendor status strings) into the app's internal Invoice type, so billing UI depends on one clean shape.",
+      code: `export interface Invoice {
+  id: string;
+  amount: number; // whole currency units, not cents
+  currency: string;
+  status: "paid" | "open" | "void";
+  dueDate: Date | null;
+}
+
+// Stripe's raw shape — amounts in cents, dates as Unix seconds, extra statuses.
+interface StripeInvoiceDTO {
+  id: string;
+  amount_due: number;
+  currency: string;
+  status: "paid" | "open" | "uncollectible" | "void" | "draft";
+  due_date: number | null;
+}
+
+const STATUS_MAP: Record<StripeInvoiceDTO["status"], Invoice["status"]> = {
+  paid: "paid",
+  open: "open",
+  draft: "open",
+  uncollectible: "open",
+  void: "void",
+};
+
+// The adapter: the only place that knows Stripe's field names and units.
+export function adaptStripeInvoice(dto: StripeInvoiceDTO): Invoice {
+  return {
+    id: dto.id,
+    amount: dto.amount_due / 100,
+    currency: dto.currency.toUpperCase(),
+    status: STATUS_MAP[dto.status],
+    dueDate: dto.due_date ? new Date(dto.due_date * 1000) : null,
+  };
+}
+
+// Billing components import Invoice and never see a Stripe DTO.`,
     },
   ],
   pros: [

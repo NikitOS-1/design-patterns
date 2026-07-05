@@ -37,6 +37,11 @@ export const providerPattern: Pattern = {
       detail:
         "Provides the single QueryClient to the subtree, giving every `useQuery` call access to the shared cache — dependency injection via context.",
     },
+    {
+      name: "i18n providers (react-i18next, next-intl)",
+      detail:
+        "An `I18nProvider` supplies the active locale and translations to the whole tree, so any component calls `t('key')` without the locale being threaded through props — exactly how this site's own LocaleProvider works.",
+    },
   ],
   codeExamples: [
     {
@@ -79,6 +84,36 @@ export function useTheme(): ThemeContextValue {
 
 // Any descendant, at any depth, reads it directly:
 // const { theme, toggle } = useTheme();`,
+    },
+    {
+      filename: "src/features/flags/FlagsProvider.tsx",
+      language: "tsx",
+      description:
+        "A feature-flags provider: flags are resolved once at the root and supplied to the tree, and a guarded useFlag() hook reads a single flag anywhere — dependency injection for gating UI.",
+      code: `"use client";
+
+import { createContext, useContext } from "react";
+
+type Flags = Record<string, boolean>;
+
+const FlagsContext = createContext<Flags | null>(null);
+
+export function FlagsProvider({ flags, children }: { flags: Flags; children: React.ReactNode }) {
+  // \`flags\` is resolved once (e.g. in a Server Component) and passed in,
+  // so the value is stable and every consumer reads the same set.
+  return <FlagsContext.Provider value={flags}>{children}</FlagsContext.Provider>;
+}
+
+// Guarded hook: reads one flag, throws loudly if used outside the provider.
+export function useFlag(name: string): boolean {
+  const flags = useContext(FlagsContext);
+  if (!flags) throw new Error("useFlag must be used within <FlagsProvider>");
+  return flags[name] ?? false;
+}
+
+// Any component gates itself without prop drilling:
+// const showNewEditor = useFlag("new-editor");
+// return showNewEditor ? <NewEditor /> : <LegacyEditor />;`,
     },
   ],
   pros: [

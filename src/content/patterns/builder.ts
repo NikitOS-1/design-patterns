@@ -102,6 +102,55 @@ const params = new CandidateQueryBuilder()
 
 // fetch(\`/api/candidates?\${params.toString()}\`)`,
     },
+    {
+      filename: "src/lib/ui/buttonClass.ts",
+      language: "ts",
+      description:
+        "A fluent variant builder for className strings — base classes plus variant/size/conditional state, resolved with .build(). The same idea cva productizes, handy when you want it inline.",
+      code: `type Variant = "primary" | "secondary" | "ghost";
+type Size = "sm" | "md" | "lg";
+
+const BASE = "inline-flex items-center justify-center rounded font-medium transition";
+
+const VARIANT: Record<Variant, string> = {
+  primary: "bg-amber text-ink-900 hover:bg-amber-soft",
+  secondary: "border border-ink-500 text-ink-100 hover:border-amber",
+  ghost: "text-ink-300 hover:text-amber",
+};
+
+const SIZE: Record<Size, string> = {
+  sm: "h-8 px-3 text-xs",
+  md: "h-10 px-4 text-sm",
+  lg: "h-12 px-6 text-base",
+};
+
+export class ButtonClass {
+  private parts: string[] = [BASE];
+
+  variant(v: Variant): this {
+    this.parts.push(VARIANT[v]);
+    return this;
+  }
+  size(s: Size): this {
+    this.parts.push(SIZE[s]);
+    return this;
+  }
+  when(condition: boolean, classes: string): this {
+    if (condition) this.parts.push(classes);
+    return this;
+  }
+  build(): string {
+    return this.parts.filter(Boolean).join(" ");
+  }
+}
+
+// Reads top-to-bottom; each piece is optional and can't be forgotten:
+// const cls = new ButtonClass()
+//   .variant("primary")
+//   .size("md")
+//   .when(isLoading, "opacity-60 pointer-events-none")
+//   .build();`,
+    },
   ],
   pros: [
     "Call sites read like a sentence and can't easily be built into an invalid half-state",

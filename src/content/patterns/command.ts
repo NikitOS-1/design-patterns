@@ -36,6 +36,11 @@ export const command: Pattern = {
       detail:
         "A dispatched Redux action is itself a Command: a plain object describing 'what should happen', decoupled from the reducer that knows how to execute (and, with tools like redux-undo, unwind) it.",
     },
+    {
+      name: "Canvas editors' undo (Excalidraw, tldraw)",
+      detail:
+        "Drawing tools model each edit (add shape, move, resize) as a command with an inverse, so undo/redo is a generic stack of commands rather than per-tool reversal code.",
+    },
   ],
   codeExamples: [
     {

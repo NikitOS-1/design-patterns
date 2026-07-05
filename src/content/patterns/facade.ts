@@ -36,6 +36,11 @@ export const facade: Pattern = {
       detail:
         "Products building on real-time video SDKs typically wrap connection setup, device permissions, and room state behind one `useCall()` hook so components never touch the raw SDK.",
     },
+    {
+      name: "Map SDK wrappers (`useMap`)",
+      detail:
+        "Products on Mapbox or Google Maps wrap tile setup, marker layers, and viewport state behind one `useMap()` hook, so components add pins without ever touching the imperative map SDK.",
+    },
   ],
   codeExamples: [
     {
@@ -105,6 +110,58 @@ export function useCheckout() {
 // The component using it never touches Stripe, the order API, or analytics:
 // const { submit, isProcessing, error } = useCheckout();
 // <button onClick={submit} disabled={isProcessing}>Pay now</button>`,
+    },
+    {
+      filename: "src/features/upload/useFileUpload.ts",
+      language: "ts",
+      description:
+        "A facade hook hiding the presigned-URL fetch, the direct-to-storage PUT, progress tracking, and the metadata save behind one upload() call and a simple { progress, error } state.",
+      code: `import { useState } from "react";
+import { apiClient } from "@/lib/apiClient";
+
+export function useFileUpload() {
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  async function upload(file: File): Promise<{ success: boolean; fileId?: string }> {
+    setError(null);
+    setProgress(0);
+    try {
+      // 1. Ask the backend for a presigned URL + a file record.
+      const { uploadUrl, fileId } = await apiClient.request<{ uploadUrl: string; fileId: string }>(
+        "/uploads",
+        { method: "POST", body: JSON.stringify({ name: file.name, size: file.size }) }
+      );
+
+      // 2. Upload the bytes straight to storage, reporting progress.
+      await putWithProgress(uploadUrl, file, setProgress);
+
+      // 3. Mark the record complete.
+      await apiClient.request(\`/uploads/\${fileId}/complete\`, { method: "POST" });
+      return { success: true, fileId };
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+      return { success: false };
+    }
+  }
+
+  return { upload, progress, error };
+}
+
+function putWithProgress(url: string, file: File, onProgress: (p: number) => void) {
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", url);
+    xhr.upload.onprogress = (e) =>
+      e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
+    xhr.onload = () => (xhr.status < 300 ? resolve() : reject(new Error(\`HTTP \${xhr.status}\`)));
+    xhr.onerror = () => reject(new Error("Network error"));
+    xhr.send(file);
+  });
+}
+
+// The component just calls upload(file) — three subsystems, one method:
+// const { upload, progress, error } = useFileUpload();`,
     },
   ],
   pros: [

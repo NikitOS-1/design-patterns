@@ -36,6 +36,11 @@ export const composite: Pattern = {
       detail:
         "A layout section can contain other sections; a single recursive renderer walks the block tree without special-casing container vs. leaf blocks.",
     },
+    {
+      name: "Design-tool layer trees (Figma-like)",
+      detail:
+        "A frame contains layers that may themselves be frames; one recursive node component renders the whole layer tree, so grouping and nesting need no special-casing.",
+    },
   ],
   codeExamples: [
     {
@@ -67,6 +72,36 @@ export function CommentNode({ comment, depth = 0 }: { comment: CommentNodeData; 
 
 // Usage — one call renders the entire tree, however deep:
 // <CommentNode comment={thread} />`,
+    },
+    {
+      filename: "src/components/FileTree.tsx",
+      language: "tsx",
+      description:
+        "A file/folder tree as a single recursive component. A file is a leaf; a folder recurses into its children — the same node type handles both, at any depth, with no branching in the caller.",
+      code: `export type FsNode =
+  | { kind: "file"; name: string }
+  | { kind: "folder"; name: string; children: FsNode[] };
+
+export function FileTreeNode({ node, depth = 0 }: { node: FsNode; depth?: number }) {
+  const pad = { paddingLeft: depth * 16 };
+
+  if (node.kind === "file") {
+    return <div style={pad} className="py-1 text-sm text-ink-300">{node.name}</div>;
+  }
+
+  // A folder renders its label, then recurses — identical path at any depth.
+  return (
+    <div>
+      <div style={pad} className="py-1 text-sm font-medium text-ink-100">{node.name}/</div>
+      {node.children.map((child) => (
+        <FileTreeNode key={child.name} node={child} depth={depth + 1} />
+      ))}
+    </div>
+  );
+}
+
+// One call renders the whole tree, however deep:
+// <FileTreeNode node={rootFolder} />`,
     },
   ],
   pros: [

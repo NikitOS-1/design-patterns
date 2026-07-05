@@ -36,6 +36,11 @@ export const factoryMethod: Pattern = {
       detail:
         "`createPaymentProvider('stripe' | 'paypal')` returns an object implementing the same `charge()`/`refund()` interface, so checkout code never branches on provider.",
     },
+    {
+      name: "BI dashboard chart factories",
+      detail:
+        "A `createChart(type)` maps a chart type ('line' | 'bar' | 'area') to the matching chart component and sensible defaults, so a config-driven dashboard renders any tile without branching at each one.",
+    },
   ],
   codeExamples: [
     {

@@ -36,6 +36,11 @@ export const iterator: Pattern = {
       detail:
         "JS Maps, Sets, and generator functions all implement the iterator protocol, so `for...of` and spread work uniformly no matter the internal storage.",
     },
+    {
+      name: "Infinite-scroll cursors (useInfiniteQuery)",
+      detail:
+        "`useInfiniteQuery` exposes pages as a growing sequence with a `fetchNextPage` cursor, so a feed consumes 'the next page' on demand without the component tracking offsets.",
+    },
   ],
   codeExamples: [
     {
@@ -73,6 +78,32 @@ interface Candidate {
 //   process(candidate);
 //   if (someCondition) break; // stops fetching further pages, too
 // }`,
+    },
+    {
+      filename: "src/lib/tree/walkTree.ts",
+      language: "ts",
+      description:
+        "A generator that walks a tree depth-first, yielding one node at a time. The consumer uses for...of, can stop early, and never sees the recursion or the tree's shape.",
+      code: `interface TreeNode {
+  id: string;
+  children?: TreeNode[];
+}
+
+// A generator hides the recursion behind a plain, lazy sequence.
+export function* walkDepthFirst(node: TreeNode): Generator<TreeNode> {
+  yield node;
+  for (const child of node.children ?? []) {
+    yield* walkDepthFirst(child); // delegate to the sub-walk
+  }
+}
+
+// The consumer just iterates — and can break early to stop the walk:
+// for (const node of walkDepthFirst(root)) {
+//   if (node.id === targetId) return node; // stops traversing here
+// }
+//
+// Spread and array methods work too, because it's a real iterable:
+// const ids = [...walkDepthFirst(root)].map((n) => n.id);`,
     },
   ],
   pros: [

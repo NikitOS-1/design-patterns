@@ -36,6 +36,11 @@ export const memento: Pattern = {
       detail:
         "Document tools keep periodic snapshots and let users restore any of them — each snapshot is a memento the history UI holds without needing to understand its internals.",
     },
+    {
+      name: "Checkpoint before a risky operation",
+      detail:
+        "Before a bulk find-and-replace or a destructive transform, editors snapshot the document so a single undo restores the whole pre-operation state at once.",
+    },
   ],
   codeExamples: [
     {
@@ -87,6 +92,42 @@ export function useSnapshotHistory<T>(initial: T) {
 // Usage — the editor commits snapshots; undo/redo restore them:
 // const { present: doc, commit, undo, redo } = useSnapshotHistory(initialDoc);
 // commit({ ...doc, title: "New title" });`,
+    },
+    {
+      filename: "src/features/editor/draftMemento.ts",
+      language: "ts",
+      description:
+        "A memento pair: the editor produces an opaque snapshot of its state, and a caretaker (here, localStorage) stores and later restores it without knowing its internal shape.",
+      code: `export interface DocState {
+  title: string;
+  body: string;
+  updatedAt: number;
+}
+
+// The originator produces and restores its own snapshots (mementos).
+export function snapshot(state: DocState): string {
+  return JSON.stringify(state);
+}
+
+export function restore(memento: string): DocState {
+  return JSON.parse(memento) as DocState;
+}
+
+// A caretaker stores mementos opaquely — it never inspects their shape.
+const DRAFT_KEY = "editor:draft";
+
+export function saveDraft(state: DocState): void {
+  localStorage.setItem(DRAFT_KEY, snapshot(state));
+}
+
+export function loadDraft(): DocState | null {
+  const memento = localStorage.getItem(DRAFT_KEY);
+  return memento ? restore(memento) : null;
+}
+
+// On mount, offer to recover; on change (debounced), autosave:
+// const recovered = loadDraft();
+// saveDraft({ title, body, updatedAt: Date.now() });`,
     },
   ],
   pros: [

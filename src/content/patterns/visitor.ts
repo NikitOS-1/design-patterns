@@ -36,6 +36,11 @@ export const visitor: Pattern = {
       detail:
         "Structured content (e.g. Portable Text) is rendered by supplying a visitor of components/handlers per block type, so a new export target is a new visitor, not a change to the content schema.",
     },
+    {
+      name: "GraphQL AST visitors (graphql-js `visit`)",
+      detail:
+        "`visit(ast, { Field(node) {} })` walks a GraphQL document with per-node-type handlers, so linters and transforms add passes without changing the AST node types.",
+    },
   ],
   codeExamples: [
     {
@@ -79,6 +84,43 @@ export const htmlVisitor: Visitor<string> = {
 
 // Adding Markdown export = a new visitor, zero changes to DocNode:
 // export const markdownVisitor: Visitor<string> = { ... };`,
+    },
+    {
+      filename: "src/features/richtext/wordCountVisitor.ts",
+      language: "ts",
+      description:
+        "A second visitor over the same node types — counting words instead of rendering. Adding this operation touched zero node definitions: new operation = new visitor.",
+      code: `type DocNode =
+  | { type: "text"; value: string }
+  | { type: "paragraph"; children: DocNode[] }
+  | { type: "heading"; level: number; children: DocNode[] };
+
+// One handler per node type, returning a number (the word count).
+interface CountVisitor {
+  text(node: Extract<DocNode, { type: "text" }>): number;
+  paragraph(node: Extract<DocNode, { type: "paragraph" }>, visit: (n: DocNode) => number): number;
+  heading(node: Extract<DocNode, { type: "heading" }>, visit: (n: DocNode) => number): number;
+}
+
+function walk(node: DocNode, v: CountVisitor): number {
+  const visit = (n: DocNode) => walk(n, v);
+  switch (node.type) {
+    case "text":      return v.text(node);
+    case "paragraph": return v.paragraph(node, visit);
+    case "heading":   return v.heading(node, visit);
+  }
+}
+
+const sumChildren = (children: DocNode[], visit: (n: DocNode) => number) =>
+  children.reduce((total, child) => total + visit(child), 0);
+
+export const wordCountVisitor: CountVisitor = {
+  text: (n) => n.value.trim().split(/\\s+/).filter(Boolean).length,
+  paragraph: (n, visit) => sumChildren(n.children, visit),
+  heading: (n, visit) => sumChildren(n.children, visit),
+};
+
+// Same node types, brand-new operation — nothing in DocNode changed.`,
     },
   ],
   pros: [

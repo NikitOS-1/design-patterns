@@ -37,6 +37,11 @@ export const controlledComponents: Pattern = {
       detail:
         "Formik drives fields from form state so cross-field validation and derived UI update consistently as values change.",
     },
+    {
+      name: "Radix/Headless controlled + uncontrolled props",
+      detail:
+        "Primitives like Radix Select accept both `value`/`onValueChange` (controlled) and `defaultValue` (uncontrolled), letting you opt into React-state control exactly when you need to react to changes.",
+    },
   ],
   codeExamples: [
     {
