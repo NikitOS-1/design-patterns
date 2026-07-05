@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteNav } from "@/components/SiteNav";
@@ -23,10 +23,36 @@ const mono = JetBrains_Mono({
   weight: ["400", "500", "700"],
 });
 
+const SITE_DESCRIPTION =
+  "Classic GoF design patterns plus modern React patterns, redrawn as React, Next.js, and TypeScript blueprints — with production-grade examples instead of abstract Animal/Shape demos.";
+
 export const metadata: Metadata = {
-  title: "Design Patterns — Rebuilt for the Frontend",
-  description:
-    "Classic GoF design patterns, redrawn as React, Next.js, and TypeScript blueprints — with production-grade examples instead of abstract Animal/Shape demos.",
+  // The homepage uses `default`; every other page sets its own title, which
+  // `template` wraps — e.g. "Singleton — Design Patterns / Frontend".
+  title: {
+    default: "Design Patterns for the Frontend — React, Next.js & TypeScript",
+    template: "%s — Design Patterns / Frontend",
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: "Design Patterns / Frontend",
+  keywords: [
+    "design patterns",
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Gang of Four",
+    "frontend architecture",
+  ],
+  openGraph: {
+    title: "Design Patterns for the Frontend",
+    description: SITE_DESCRIPTION,
+    type: "website",
+    locale: "en",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0B0E14",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

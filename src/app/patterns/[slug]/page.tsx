@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { patterns, getPatternBySlug } from "@/content/patterns";
 import { PatternDetail } from "@/components/PatternDetail";
@@ -6,12 +7,19 @@ export function generateStaticParams() {
   return patterns.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const pattern = getPatternBySlug(params.slug);
   if (!pattern) return {};
+  const title = `${pattern.name} — Design Patterns / Frontend`;
   return {
-    title: `${pattern.name} — Design Patterns / Frontend`,
+    // Just the pattern name; the root layout's title template appends the suffix.
+    title: pattern.name,
     description: pattern.oneLiner,
+    openGraph: {
+      title,
+      description: pattern.oneLiner,
+      type: "article",
+    },
   };
 }
 
