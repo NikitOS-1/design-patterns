@@ -5,18 +5,40 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   body {
     @apply bg-ink-900 text-ink-100 antialiased;
   }
 
-  ::selection {
-    @apply bg-amber/30 text-ink-50;
-  }
-
   * {
     @apply border-ink-600;
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.ink.400") theme("colors.ink.800");
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: theme("colors.ink.800");
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: theme("colors.ink.400");
+    border: 2px solid theme("colors.ink.800");
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: theme("colors.amber.DEFAULT");
+  }
+
+  ::selection {
+    @apply bg-amber/30 text-ink-50;
   }
 
   :focus-visible {
