@@ -1,11 +1,263 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CodeExample } from "@/lib/types";
 import { useT } from "@/lib/i18n/LocaleProvider";
 
+type BaseTokenKind = "whitespace" | "identifier" | "string" | "number" | "comment" | "symbol";
+type HighlightTokenKind = "plain" | "keyword" | "string" | "number" | "comment" | "type" | "function" | "variable";
+
+interface BaseToken {
+  kind: BaseTokenKind;
+  value: string;
+}
+
+interface HighlightToken {
+  kind: HighlightTokenKind;
+  value: string;
+}
+
+const keywordTokens = new Set([
+  "import",
+  "export",
+  "from",
+  "return",
+  "const",
+  "let",
+  "var",
+  "function",
+  "class",
+  "interface",
+  "type",
+  "extends",
+  "implements",
+  "new",
+  "if",
+  "else",
+  "switch",
+  "case",
+  "default",
+  "for",
+  "while",
+  "do",
+  "break",
+  "continue",
+  "try",
+  "catch",
+  "finally",
+  "throw",
+  "await",
+  "async",
+  "in",
+  "of",
+  "as",
+  "typeof",
+  "instanceof",
+  "true",
+  "false",
+  "null",
+  "undefined",
+]);
+
+const declarationKeywordTokens = new Set(["const", "let", "var", "function"]);
+const typeContextTokens = new Set([
+  "interface",
+  "type",
+  "class",
+  "extends",
+  "implements",
+  "new",
+  "as",
+  ":",
+  "<",
+  "|",
+  "&",
+  ",",
+  "(",
+]);
+
+const tokenClassByKind: Record<HighlightTokenKind, string> = {
+  plain: "text-ink-100",
+  keyword: "text-amber",
+  string: "text-teal",
+  number: "text-amber-soft",
+  comment: "text-ink-400",
+  type: "text-amber-soft",
+  function: "text-blueprint-light",
+  variable: "text-ink-50",
+};
+
+function isIdentifierStart(character: string): boolean {
+  return /[A-Za-z_$]/.test(character);
+}
+
+function isIdentifierPart(character: string): boolean {
+  return /[A-Za-z0-9_$]/.test(character);
+}
+
+function isDigit(character: string): boolean {
+  return /[0-9]/.test(character);
+}
+
+function getPreviousNonWhitespaceToken(tokens: BaseToken[], startIndex: number): BaseToken | null {
+  for (let index = startIndex - 1; index >= 0; index -= 1) {
+    if (tokens[index].kind !== "whitespace") {
+      return tokens[index];
+    }
+  }
+  return null;
+}
+
+function getNextNonWhitespaceToken(tokens: BaseToken[], startIndex: number): BaseToken | null {
+  for (let index = startIndex + 1; index < tokens.length; index += 1) {
+    if (tokens[index].kind !== "whitespace") {
+      return tokens[index];
+    }
+  }
+  return null;
+}
+
+function tokenizeCode(code: string): BaseToken[] {
+  const tokens: BaseToken[] = [];
+  let index = 0;
+
+  while (index < code.length) {
+    const character = code[index];
+    const nextCharacter = code[index + 1];
+
+    if (/\s/.test(character)) {
+      const start = index;
+      while (index < code.length && /\s/.test(code[index])) {
+        index += 1;
+      }
+      tokens.push({ kind: "whitespace", value: code.slice(start, index) });
+      continue;
+    }
+
+    if (character === "/" && nextCharacter === "/") {
+      const start = index;
+      index += 2;
+      while (index < code.length && code[index] !== "\n") {
+        index += 1;
+      }
+      tokens.push({ kind: "comment", value: code.slice(start, index) });
+      continue;
+    }
+
+    if (character === "/" && nextCharacter === "*") {
+      const start = index;
+      index += 2;
+      while (index < code.length && !(code[index] === "*" && code[index + 1] === "/")) {
+        index += 1;
+      }
+      index += 2;
+      tokens.push({ kind: "comment", value: code.slice(start, index) });
+      continue;
+    }
+
+    if (character === "\"" || character === "'" || character === "`") {
+      const quote = character;
+      const start = index;
+      index += 1;
+      while (index < code.length) {
+        if (code[index] === "\\") {
+          index += 2;
+          continue;
+        }
+        if (code[index] === quote) {
+          index += 1;
+          break;
+        }
+        index += 1;
+      }
+      tokens.push({ kind: "string", value: code.slice(start, index) });
+      continue;
+    }
+
+    if (isDigit(character)) {
+      const start = index;
+      index += 1;
+      while (index < code.length && /[0-9._]/.test(code[index])) {
+        index += 1;
+      }
+      tokens.push({ kind: "number", value: code.slice(start, index) });
+      continue;
+    }
+
+    if (isIdentifierStart(character)) {
+      const start = index;
+      index += 1;
+      while (index < code.length && isIdentifierPart(code[index])) {
+        index += 1;
+      }
+      tokens.push({ kind: "identifier", value: code.slice(start, index) });
+      continue;
+    }
+
+    tokens.push({ kind: "symbol", value: character });
+    index += 1;
+  }
+
+  return tokens;
+}
+
+function highlightCode(code: string): HighlightToken[] {
+  const baseTokens = tokenizeCode(code);
+
+  return baseTokens.map((token, index): HighlightToken => {
+    if (token.kind === "whitespace") {
+      return { kind: "plain", value: token.value };
+    }
+
+    if (token.kind === "string") {
+      return { kind: "string", value: token.value };
+    }
+
+    if (token.kind === "number") {
+      return { kind: "number", value: token.value };
+    }
+
+    if (token.kind === "comment") {
+      return { kind: "comment", value: token.value };
+    }
+
+    if (token.kind !== "identifier") {
+      return { kind: "plain", value: token.value };
+    }
+
+    if (keywordTokens.has(token.value)) {
+      return { kind: "keyword", value: token.value };
+    }
+
+    const previousToken = getPreviousNonWhitespaceToken(baseTokens, index);
+    const nextToken = getNextNonWhitespaceToken(baseTokens, index);
+
+    if (previousToken && declarationKeywordTokens.has(previousToken.value)) {
+      if (previousToken.value === "function") {
+        return { kind: "function", value: token.value };
+      }
+      return { kind: "variable", value: token.value };
+    }
+
+    if (nextToken?.value === "(") {
+      return { kind: "function", value: token.value };
+    }
+
+    if (token.value[0] === token.value[0].toUpperCase() && typeContextTokens.has(previousToken?.value ?? "")) {
+      return { kind: "type", value: token.value };
+    }
+
+    if (previousToken?.value === ":") {
+      return { kind: "type", value: token.value };
+    }
+
+    return { kind: "plain", value: token.value };
+  });
+}
+
 export function CodeBlock({ example }: { example: CodeExample }) {
   const [copied, setCopied] = useState(false);
+  const highlightedTokens = useMemo(() => highlightCode(example.code), [example.code]);
   const t = useT();
 
   async function handleCopy() {
@@ -34,7 +286,13 @@ export function CodeBlock({ example }: { example: CodeExample }) {
         </p>
       )}
       <pre className="overflow-x-auto px-4 py-4 text-[13px] leading-relaxed">
-        <code className="font-mono text-ink-100">{example.code}</code>
+        <code className="font-mono">
+          {highlightedTokens.map((token, tokenIndex) => (
+            <span key={`${tokenIndex}-${token.value.length}`} className={tokenClassByKind[token.kind]}>
+              {token.value}
+            </span>
+          ))}
+        </code>
       </pre>
     </div>
   );
