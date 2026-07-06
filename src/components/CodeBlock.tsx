@@ -101,8 +101,9 @@ function isDigit(character: string): boolean {
 
 function getPreviousNonWhitespaceToken(tokens: BaseToken[], startIndex: number): BaseToken | null {
   for (let index = startIndex - 1; index >= 0; index -= 1) {
-    if (tokens[index].kind !== "whitespace") {
-      return tokens[index];
+    const currentToken = tokens[index];
+    if (currentToken && currentToken.kind !== "whitespace") {
+      return currentToken;
     }
   }
   return null;
@@ -110,8 +111,9 @@ function getPreviousNonWhitespaceToken(tokens: BaseToken[], startIndex: number):
 
 function getNextNonWhitespaceToken(tokens: BaseToken[], startIndex: number): BaseToken | null {
   for (let index = startIndex + 1; index < tokens.length; index += 1) {
-    if (tokens[index].kind !== "whitespace") {
-      return tokens[index];
+    const currentToken = tokens[index];
+    if (currentToken && currentToken.kind !== "whitespace") {
+      return currentToken;
     }
   }
   return null;
@@ -122,12 +124,12 @@ function tokenizeCode(code: string): BaseToken[] {
   let index = 0;
 
   while (index < code.length) {
-    const character = code[index];
-    const nextCharacter = code[index + 1];
+    const character = code.charAt(index);
+    const nextCharacter = code.charAt(index + 1);
 
     if (/\s/.test(character)) {
       const start = index;
-      while (index < code.length && /\s/.test(code[index])) {
+      while (index < code.length && /\s/.test(code.charAt(index))) {
         index += 1;
       }
       tokens.push({ kind: "whitespace", value: code.slice(start, index) });
@@ -137,7 +139,7 @@ function tokenizeCode(code: string): BaseToken[] {
     if (character === "/" && nextCharacter === "/") {
       const start = index;
       index += 2;
-      while (index < code.length && code[index] !== "\n") {
+      while (index < code.length && code.charAt(index) !== "\n") {
         index += 1;
       }
       tokens.push({ kind: "comment", value: code.slice(start, index) });
@@ -147,10 +149,10 @@ function tokenizeCode(code: string): BaseToken[] {
     if (character === "/" && nextCharacter === "*") {
       const start = index;
       index += 2;
-      while (index < code.length && !(code[index] === "*" && code[index + 1] === "/")) {
+      while (index < code.length && !(code.charAt(index) === "*" && code.charAt(index + 1) === "/")) {
         index += 1;
       }
-      index += 2;
+      index = Math.min(index + 2, code.length);
       tokens.push({ kind: "comment", value: code.slice(start, index) });
       continue;
     }
@@ -160,11 +162,11 @@ function tokenizeCode(code: string): BaseToken[] {
       const start = index;
       index += 1;
       while (index < code.length) {
-        if (code[index] === "\\") {
+        if (code.charAt(index) === "\\") {
           index += 2;
           continue;
         }
-        if (code[index] === quote) {
+        if (code.charAt(index) === quote) {
           index += 1;
           break;
         }
@@ -177,7 +179,7 @@ function tokenizeCode(code: string): BaseToken[] {
     if (isDigit(character)) {
       const start = index;
       index += 1;
-      while (index < code.length && /[0-9._]/.test(code[index])) {
+      while (index < code.length && /[0-9._]/.test(code.charAt(index))) {
         index += 1;
       }
       tokens.push({ kind: "number", value: code.slice(start, index) });
@@ -187,7 +189,7 @@ function tokenizeCode(code: string): BaseToken[] {
     if (isIdentifierStart(character)) {
       const start = index;
       index += 1;
-      while (index < code.length && isIdentifierPart(code[index])) {
+      while (index < code.length && isIdentifierPart(code.charAt(index))) {
         index += 1;
       }
       tokens.push({ kind: "identifier", value: code.slice(start, index) });
@@ -243,7 +245,12 @@ function highlightCode(code: string): HighlightToken[] {
       return { kind: "function", value: token.value };
     }
 
-    if (token.value[0] === token.value[0].toUpperCase() && typeContextTokens.has(previousToken?.value ?? "")) {
+    const tokenFirstCharacter = token.value.charAt(0);
+
+    if (
+      tokenFirstCharacter === tokenFirstCharacter.toUpperCase() &&
+      typeContextTokens.has(previousToken?.value ?? "")
+    ) {
       return { kind: "type", value: token.value };
     }
 
