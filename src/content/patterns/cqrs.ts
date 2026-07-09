@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const cqrs: Pattern = {
   slug: "cqrs",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-15",
   name: "CQRS",
   oneLiner:

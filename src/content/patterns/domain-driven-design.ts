@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const domainDrivenDesign: Pattern = {
   slug: "domain-driven-design",
-  category: "architecture",
+  category: "architecture-shared",
   code: "A-20",
   name: "Domain-Driven Design",
   oneLiner:

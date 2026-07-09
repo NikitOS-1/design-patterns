@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const microservicesArchitecture: Pattern = {
   slug: "microservices-architecture",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-17",
   name: "Microservices Architecture",
   oneLiner:

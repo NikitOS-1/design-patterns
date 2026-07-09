@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const reactArchitecturePlaybook: Pattern = {
   slug: "react-architecture-playbook",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-03",
   name: "React Architecture Playbook",
   oneLiner:

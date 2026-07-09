@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const eventDrivenArchitecture: Pattern = {
   slug: "event-driven-architecture",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-16",
   name: "Event-Driven Architecture",
   oneLiner:

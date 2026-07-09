@@ -1,4 +1,11 @@
-export type PatternCategory = "creational" | "structural" | "behavioral" | "react" | "architecture";
+export type PatternCategory =
+  | "creational"
+  | "structural"
+  | "behavioral"
+  | "react"
+  | "architecture-frontend"
+  | "architecture-backend"
+  | "architecture-shared";
 
 export interface CodeExample {
   filename: string;
@@ -37,5 +44,7 @@ export const CATEGORY_ORDER: PatternCategory[] = [
   "structural",
   "behavioral",
   "react",
-  "architecture",
+  "architecture-frontend",
+  "architecture-backend",
+  "architecture-shared",
 ];

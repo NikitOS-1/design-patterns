@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const bffApiGateway: Pattern = {
   slug: "bff-api-gateway",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-18",
   name: "BFF + API Gateway",
   oneLiner:

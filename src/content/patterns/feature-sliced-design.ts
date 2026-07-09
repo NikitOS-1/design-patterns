@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const featureSlicedDesign: Pattern = {
   slug: "feature-sliced-design",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-06",
   name: "Feature-Sliced Design (FSD)",
   oneLiner:

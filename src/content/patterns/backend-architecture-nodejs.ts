@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const backendArchitectureNodejs: Pattern = {
   slug: "backend-architecture-nodejs",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-02",
   name: "Backend Architecture (Node.js + NestJS)",
   oneLiner:

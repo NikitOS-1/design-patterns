@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const frontendArchitectureReactNextjs: Pattern = {
   slug: "frontend-architecture-react-nextjs",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-01",
   name: "Frontend Architecture (React + Next.js)",
   oneLiner:

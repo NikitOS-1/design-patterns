@@ -30,7 +30,7 @@ export function SiteNav() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
+        <nav className="hidden items-center gap-3 xl:gap-6 2xl:gap-8 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}

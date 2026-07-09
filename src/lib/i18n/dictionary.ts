@@ -64,7 +64,9 @@ const en: Dictionary = {
       structural: "Structural",
       behavioral: "Behavioral",
       react: "React",
-      architecture: "Architectures",
+      "architecture-frontend": "FE Arch",
+      "architecture-backend": "BE Arch",
+      "architecture-shared": "Shared",
     },
     github: "GitHub ↗",
     openMenu: "Open menu",
@@ -84,7 +86,9 @@ const en: Dictionary = {
       structural: "Structural",
       behavioral: "Behavioral",
       react: "React Patterns",
-      architecture: "Architectures",
+      "architecture-frontend": "Frontend Architectures",
+      "architecture-backend": "Backend Architectures",
+      "architecture-shared": "Shared Architectures",
     },
     blurb: {
       creational:
@@ -93,8 +97,12 @@ const en: Dictionary = {
       behavioral: "How responsibilities and communication flow between parts of the app.",
       react:
         "Patterns that aren't in the Gang of Four book but are the real vocabulary of production React today.",
-      architecture:
-        "Baseline architecture playbooks for frontend and backend systems, with guidance on where each approach fits best.",
+      "architecture-frontend":
+        "Architectures you reach for most often in React and Next.js — FSD, feature-based, Atomic Design, modular monolith, and micro frontends.",
+      "architecture-backend":
+        "Architectures common in NestJS and Node.js backends — layered, Clean/Hexagonal, CQRS, events, BFF, sagas, and microservices.",
+      "architecture-shared":
+        "Cross-cutting approaches used on both sides of the stack — DDD language and boundaries, plus a React + NestJS growth roadmap.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },
@@ -148,7 +156,9 @@ const uk: Dictionary = {
       structural: "Структурні",
       behavioral: "Поведінкові",
       react: "React",
-      architecture: "Архітектури",
+      "architecture-frontend": "FE Arch",
+      "architecture-backend": "BE Arch",
+      "architecture-shared": "Спільні",
     },
     github: "GitHub ↗",
     openMenu: "Відкрити меню",
@@ -168,7 +178,9 @@ const uk: Dictionary = {
       structural: "Структурні",
       behavioral: "Поведінкові",
       react: "React-патерни",
-      architecture: "Архітектури",
+      "architecture-frontend": "Frontend-архітектури",
+      "architecture-backend": "Backend-архітектури",
+      "architecture-shared": "Спільні архітектури",
     },
     blurb: {
       creational:
@@ -177,8 +189,12 @@ const uk: Dictionary = {
       behavioral: "Як відповідальність і комунікація розподіляються між частинами застосунку.",
       react:
         "Патерни, яких немає в книзі «Банди чотирьох», але які сьогодні є справжньою мовою продакшн-React.",
-      architecture:
-        "Базові архітектурні підходи для фронтенду та бекенду з орієнтирами, де і коли їх застосовувати.",
+      "architecture-frontend":
+        "Архітектури, які найчастіше застосовують у React і Next.js — FSD, feature-based, Atomic Design, modular monolith і micro frontends.",
+      "architecture-backend":
+        "Архітектури, типові для NestJS і Node.js — layered, Clean/Hexagonal, CQRS, events, BFF, sagas і microservices.",
+      "architecture-shared":
+        "Наскрізні підходи для обох сторін стеку — мова й межі DDD, плюс roadmap зростання React + NestJS.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },

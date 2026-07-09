@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const sagaPattern: Pattern = {
   slug: "saga-pattern",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-19",
   name: "Saga Pattern",
   oneLiner:

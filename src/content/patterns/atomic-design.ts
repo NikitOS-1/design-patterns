@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const atomicDesign: Pattern = {
   slug: "atomic-design",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-09",
   name: "Atomic Design",
   oneLiner:

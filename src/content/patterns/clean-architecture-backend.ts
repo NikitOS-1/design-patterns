@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const cleanArchitectureBackend: Pattern = {
   slug: "clean-architecture-backend",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-13",
   name: "Clean Architecture / Onion (Backend)",
   oneLiner:

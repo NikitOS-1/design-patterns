@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const reactNestjsSeniorRoadmap: Pattern = {
   slug: "react-nestjs-senior-roadmap",
-  category: "architecture",
+  category: "architecture-shared",
   code: "A-05",
   name: "React + NestJS Senior Roadmap",
   oneLiner:

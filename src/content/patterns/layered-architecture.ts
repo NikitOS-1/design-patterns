@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const layeredArchitecture: Pattern = {
   slug: "layered-architecture",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-12",
   name: "Layered Architecture",
   oneLiner:

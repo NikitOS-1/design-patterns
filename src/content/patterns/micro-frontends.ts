@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const microFrontends: Pattern = {
   slug: "micro-frontends",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-11",
   name: "Micro Frontends",
   oneLiner:

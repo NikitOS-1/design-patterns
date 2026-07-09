@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const modularMonolithFrontend: Pattern = {
   slug: "modular-monolith-frontend",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-10",
   name: "Modular Monolith (Frontend)",
   oneLiner:

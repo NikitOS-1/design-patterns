@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const featureBasedArchitecture: Pattern = {
   slug: "feature-based-architecture",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-07",
   name: "Feature-Based Architecture",
   oneLiner:

@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const hexagonalArchitecture: Pattern = {
   slug: "hexagonal-architecture",
-  category: "architecture",
+  category: "architecture-backend",
   code: "A-14",
   name: "Hexagonal Architecture",
   oneLiner:

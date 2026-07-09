@@ -2,7 +2,7 @@ import { Pattern } from "@/lib/types";
 
 export const cleanArchitectureFrontend: Pattern = {
   slug: "clean-architecture-frontend",
-  category: "architecture",
+  category: "architecture-frontend",
   code: "A-08",
   name: "Clean Architecture (Frontend)",
   oneLiner:
