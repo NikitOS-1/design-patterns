@@ -102,7 +102,7 @@ const en: Dictionary = {
       "architecture-backend":
         "Architectures common in NestJS and Node.js backends — layered, Clean/Hexagonal, CQRS, events, BFF, sagas, and microservices.",
       "architecture-shared":
-        "Cross-cutting approaches used on both sides of the stack — DDD language and boundaries, plus a React + NestJS growth roadmap.",
+        "Cross-cutting approaches used on both sides of the stack — DDD language, bounded contexts, and shared modeling vocabulary.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },
@@ -194,7 +194,7 @@ const uk: Dictionary = {
       "architecture-backend":
         "Архітектури, типові для NestJS і Node.js — layered, Clean/Hexagonal, CQRS, events, BFF, sagas і microservices.",
       "architecture-shared":
-        "Наскрізні підходи для обох сторін стеку — мова й межі DDD, плюс roadmap зростання React + NestJS.",
+        "Наскрізні підходи для обох сторін стеку — мова DDD, bounded contexts і спільний словник моделювання.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },

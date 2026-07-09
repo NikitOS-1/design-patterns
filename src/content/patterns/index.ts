@@ -42,7 +42,6 @@ import { frontendArchitectureReactNextjs } from "./frontend-architecture-react-n
 import { backendArchitectureNodejs } from "./backend-architecture-nodejs";
 import { reactArchitecturePlaybook } from "./react-architecture-playbook";
 import { nestjsBackendArchitecturePlaybook } from "./nestjs-backend-architecture-playbook";
-import { reactNestjsSeniorRoadmap } from "./react-nestjs-senior-roadmap";
 import { featureSlicedDesign } from "./feature-sliced-design";
 import { featureBasedArchitecture } from "./feature-based-architecture";
 import { cleanArchitectureFrontend } from "./clean-architecture-frontend";
@@ -113,7 +112,6 @@ export const patterns: Pattern[] = [
   domainDrivenDesign,
   reactArchitecturePlaybook,
   nestjsBackendArchitecturePlaybook,
-  reactNestjsSeniorRoadmap,
 ];
 
 export function getPatternBySlug(slug: string): Pattern | undefined {
