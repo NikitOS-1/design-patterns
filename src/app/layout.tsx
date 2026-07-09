@@ -24,27 +24,29 @@ const mono = JetBrains_Mono({
 });
 
 const SITE_DESCRIPTION =
-  "Classic GoF design patterns plus modern React patterns, redrawn as React, Next.js, and TypeScript blueprints — with production-grade examples instead of abstract Animal/Shape demos.";
+  "Classic GoF design patterns, modern React patterns, and named frontend/backend architectures — rebuilt as React, Next.js, NestJS, and TypeScript with production-grade examples.";
 
 export const metadata: Metadata = {
-  // The homepage uses `default`; every other page sets its own title, which
-  // `template` wraps — e.g. "Singleton — Design Patterns / Frontend".
   title: {
-    default: "Design Patterns for the Frontend — React, Next.js & TypeScript",
-    template: "%s — Design Patterns / Frontend",
+    default: "Design Patterns for React & NestJS — Architectures & TypeScript",
+    template: "%s — Design Patterns / React · NestJS",
   },
   description: SITE_DESCRIPTION,
-  applicationName: "Design Patterns / Frontend",
+  applicationName: "Design Patterns / React · NestJS",
   keywords: [
     "design patterns",
     "React",
     "Next.js",
+    "NestJS",
     "TypeScript",
     "Gang of Four",
     "frontend architecture",
+    "backend architecture",
+    "Feature-Sliced Design",
+    "Clean Architecture",
   ],
   openGraph: {
-    title: "Design Patterns for the Frontend",
+    title: "Design Patterns for React & NestJS",
     description: SITE_DESCRIPTION,
     type: "website",
     locale: "en",

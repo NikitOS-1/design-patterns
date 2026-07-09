@@ -64,18 +64,19 @@ const en: Dictionary = {
       structural: "Structural",
       behavioral: "Behavioral",
       react: "React",
+      architecture: "Architectures",
     },
     github: "GitHub ↗",
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
   hero: {
-    eyebrow: (count) => `${count} patterns, redrawn for the frontend`,
+    eyebrow: (count) => `${count} patterns & architectures for React and NestJS`,
     titleLine1: "Design patterns,",
     titleLine2: "as they actually appear",
     titleAccent: "in production",
     paragraph:
-      "The 23 Gang-of-Four patterns plus the modern React patterns that make up the real vocabulary of production code — rebuilt as React, Next.js, and TypeScript. Not another Animal/Shape UML diagram: the same shapes you'll find inside Prisma, Stripe.js, TanStack Query, Radix, and your own codebase.",
+      "The 23 Gang-of-Four patterns, modern React patterns, and named frontend/backend architectures — rebuilt as React, Next.js, NestJS, and TypeScript. Not another Animal/Shape UML diagram: the same shapes you'll find inside Prisma, Stripe.js, TanStack Query, Radix, and your own codebase.",
   },
   category: {
     label: {
@@ -83,6 +84,7 @@ const en: Dictionary = {
       structural: "Structural",
       behavioral: "Behavioral",
       react: "React Patterns",
+      architecture: "Architectures",
     },
     blurb: {
       creational:
@@ -91,6 +93,8 @@ const en: Dictionary = {
       behavioral: "How responsibilities and communication flow between parts of the app.",
       react:
         "Patterns that aren't in the Gang of Four book but are the real vocabulary of production React today.",
+      architecture:
+        "Baseline architecture playbooks for frontend and backend systems, with guidance on where each approach fits best.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },
@@ -124,13 +128,11 @@ const en: Dictionary = {
     next: "Next →",
   },
   footer: {
-    edition: "Design Patterns / Frontend Edition",
-    stack: "React · Next.js · TypeScript · Tailwind",
+    edition: "Design Patterns / React · NestJS",
+    stack: "React · Next.js · NestJS · TypeScript · Tailwind",
   },
 };
 
-// Ukrainian plural for "файл" (file): 1 → файл, 2–4 → файли, else → файлів
-// (with the 11–14 teens exception).
 function ukFiles(count: number): string {
   const mod10 = count % 10;
   const mod100 = count % 100;
@@ -146,18 +148,19 @@ const uk: Dictionary = {
       structural: "Структурні",
       behavioral: "Поведінкові",
       react: "React",
+      architecture: "Архітектури",
     },
     github: "GitHub ↗",
     openMenu: "Відкрити меню",
     closeMenu: "Закрити меню",
   },
   hero: {
-    eyebrow: (count) => `${count} патернів, переосмислених для фронтенду`,
+    eyebrow: (count) => `${count} патернів і архітектур для React та NestJS`,
     titleLine1: "Патерни проєктування —",
     titleLine2: "такими, якими вони є",
     titleAccent: "у продакшені",
     paragraph:
-      "23 патерни «Банди чотирьох» плюс сучасні патерни React, які складають справжню мову продакшн-коду — переписані на React, Next.js і TypeScript. Не чергова UML-діаграма з Animal/Shape, а ті самі конструкції, які ви знайдете всередині Prisma, Stripe.js, TanStack Query, Radix і власної кодової бази.",
+      "23 патерни «Банди чотирьох», сучасні патерни React і іменовані frontend/backend архітектури — переписані на React, Next.js, NestJS і TypeScript. Не чергова UML-діаграма з Animal/Shape, а ті самі конструкції, які ви знайдете всередині Prisma, Stripe.js, TanStack Query, Radix і власної кодової бази.",
   },
   category: {
     label: {
@@ -165,6 +168,7 @@ const uk: Dictionary = {
       structural: "Структурні",
       behavioral: "Поведінкові",
       react: "React-патерни",
+      architecture: "Архітектури",
     },
     blurb: {
       creational:
@@ -173,6 +177,8 @@ const uk: Dictionary = {
       behavioral: "Як відповідальність і комунікація розподіляються між частинами застосунку.",
       react:
         "Патерни, яких немає в книзі «Банди чотирьох», але які сьогодні є справжньою мовою продакшн-React.",
+      architecture:
+        "Базові архітектурні підходи для фронтенду та бекенду з орієнтирами, де і коли їх застосовувати.",
     },
     counter: (index, total) => `${String(index).padStart(2, "0")} / ${total}`,
   },
@@ -206,8 +212,8 @@ const uk: Dictionary = {
     next: "Наступний →",
   },
   footer: {
-    edition: "Патерни проєктування / Frontend-видання",
-    stack: "React · Next.js · TypeScript · Tailwind",
+    edition: "Патерни проєктування / React · NestJS",
+    stack: "React · Next.js · NestJS · TypeScript · Tailwind",
   },
 };
 

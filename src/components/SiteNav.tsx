@@ -20,17 +20,17 @@ export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-ink-600 bg-ink-900/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <Link href="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
+        <Link href="/" className="group flex shrink-0 items-center gap-3" onClick={() => setOpen(false)}>
           <span className="flex h-9 w-9 items-center justify-center border border-amber/50 font-mono text-xs font-bold text-amber transition-colors group-hover:bg-amber/10">
             DP
           </span>
-          <span className="font-display text-sm font-semibold tracking-wide text-ink-100 sm:text-base">
+          <span className="whitespace-nowrap font-display text-sm font-semibold tracking-wide text-ink-100 sm:text-base">
             DESIGN PATTERNS
-            <span className="ml-1.5 text-ink-400">/ frontend</span>
+            <span className="ml-1.5 text-ink-400">/ React · NestJS</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -51,7 +51,7 @@ export function SiteNav() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <LangSwitcher />
           <button
             aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
@@ -70,7 +70,7 @@ export function SiteNav() {
       </div>
 
       {open && (
-        <nav className="border-t border-ink-600 bg-ink-900 px-5 py-4 md:hidden">
+        <nav className="border-t border-ink-600 bg-ink-900 px-5 py-4 lg:hidden">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
