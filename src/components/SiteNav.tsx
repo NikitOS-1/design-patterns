@@ -26,7 +26,7 @@ export function SiteNav() {
           </span>
           <span className="whitespace-nowrap font-display text-sm font-semibold tracking-wide text-ink-100 sm:text-base">
             DESIGN PATTERNS
-            <span className="ml-1.5 text-ink-400">/ React · NestJS</span>
+            <span className="ml-1.5 hidden text-ink-400 sm:inline">/ React · NestJS</span>
           </span>
         </Link>
 

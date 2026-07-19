@@ -112,3 +112,115 @@
     text-wrap: balance;
   }
 }
+
+/* ============================================================
+   Pattern "how it works" animations
+   Shared, dependency-free CSS driving the SVG diagrams in
+   src/components/animations. The global prefers-reduced-motion
+   rule above neutralizes every animation below automatically.
+   ============================================================ */
+
+.pa-grid {
+  background-color: rgba(6, 8, 13, 0.55); /* ink-950-ish */
+  background-image:
+    linear-gradient(rgba(94, 234, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 234, 212, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.pa-stage svg text {
+  font-variant-ligatures: none;
+  letter-spacing: 0.02em;
+}
+
+/* Marching-ants flow along a connector — reads as "data moving". */
+.pa-flow {
+  stroke-dasharray: 5 5;
+  animation: pa-flow 0.9s linear infinite;
+}
+.pa-flow-rev {
+  animation-direction: reverse;
+}
+@keyframes pa-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* Soft breathing highlight for an "active" element. */
+.pa-pulse {
+  animation: pa-pulse 2.4s ease-in-out infinite;
+}
+@keyframes pa-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* A brief highlight that sweeps through a row of nodes when each
+   is given a negative animation-delay of -(i * cycle / count). */
+.pa-flash {
+  animation: pa-flash 4s ease-in-out infinite;
+}
+@keyframes pa-flash {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  8%,
+  22% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 0;
+  }
+}
+
+/* Staggered fade-in used for spawned/cloned elements. */
+.pa-spawn {
+  animation: pa-spawn 3.6s ease-in-out infinite;
+}
+@keyframes pa-spawn {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  18%,
+  78% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* A token that rides along an offset-path (set inline per element). */
+.pa-travel {
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  animation: pa-travel 1.8s linear infinite;
+}
+@keyframes pa-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+/* transform-box helper for rotating/scaling SVG shapes about their center. */
+.pa-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pa-spin 3.2s ease-in-out infinite;
+}
+@keyframes pa-spin {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}

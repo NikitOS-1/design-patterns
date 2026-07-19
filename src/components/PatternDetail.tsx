@@ -6,6 +6,8 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { localizePattern } from "@/lib/i18n/localizePattern";
 import { TitleBlock } from "@/components/TitleBlock";
 import { CodeBlock } from "@/components/CodeBlock";
+import { PatternAnimation } from "@/components/animations/PatternAnimation";
+import { hasAnimation } from "@/components/animations/registry";
 
 interface NavLink {
   slug: string;
@@ -47,6 +49,12 @@ export function PatternDetail({
       <Section title={t.patternPage.solution}>
         <p className="leading-relaxed text-ink-200">{p.solution}</p>
       </Section>
+
+      {hasAnimation(p.slug) && (
+        <Section title={t.patternPage.howItWorks}>
+          <PatternAnimation slug={p.slug} />
+        </Section>
+      )}
 
       <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <ListCard title={t.patternPage.whenToUse} items={p.whenToUse} tone="amber" />

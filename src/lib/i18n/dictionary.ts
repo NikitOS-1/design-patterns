@@ -42,6 +42,7 @@ export interface Dictionary {
   patternPage: {
     problem: string;
     solution: string;
+    howItWorks: string;
     whenToUse: string;
     avoidWhen: string;
     realWorld: string;
@@ -126,6 +127,7 @@ const en: Dictionary = {
   patternPage: {
     problem: "The problem",
     solution: "The pattern's answer",
+    howItWorks: "How it works",
     whenToUse: "Reach for it when",
     avoidWhen: "Skip it when",
     realWorld: "Where it actually shows up",
@@ -218,6 +220,7 @@ const uk: Dictionary = {
   patternPage: {
     problem: "Проблема",
     solution: "Відповідь патерну",
+    howItWorks: "Як це працює",
     whenToUse: "Коли варто застосувати",
     avoidWhen: "Коли не варто",
     realWorld: "Де це реально трапляється",
